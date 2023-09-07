@@ -2,22 +2,24 @@ import os
 os.environ["OMP_NUM_THREADS"]="3"
 os.environ["MKL_NUM_THREADS"]="3"
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
+import os, sys
 
-from skimage import io
 from matplotlib import pyplot as plt
 import cv2
 import numpy as np
 import torch
 from tqdm import tqdm
 import torch.nn.functional as F
-import sys
-
+from datetime import datetime
 # model path
 sys.path.append('./core')
-from flow_estimator import Flow_estimator
-from config import get_demo_video_args, get_life_args
+sys.path.append(os.path.join(os.getcwd(),"core"))
 
-def read_video(video_path):
+
+from flow_estimator import Flow_estimator
+from config import get_video_args, get_life_args, get_harsh_lighting_args
+
+def read_video(cap): # video_path
     '''
     读取视频文件，并将其转换为图像
     参数：
@@ -26,7 +28,7 @@ def read_video(video_path):
         imgs：图像列表
         fps：帧率
     '''
-    cap = cv2.VideoCapture(video_path)
+    # cap = cv2.VideoCapture(video_path)
     imgs = []
     plt.figure()
     while(cap.isOpened()):
@@ -182,28 +184,25 @@ def blend(estimator, marker, scene, frame, args, warp = 'homography'):
         cv2.imwrite(os.path.join(args.demo_root, 'blend.png'), blend)
     
     return blend
-def demo():           
-    args = get_demo_video_args()
-    scene_path = os.path.join(args.demo_root, args.scene_name)
-    marker_path = os.path.join(args.demo_root, args.marker_name)
-    movie_path = os.path.join(args.demo_root, args.movie_name)
-    save_path = os.path.join(args.demo_root, args.save_name)
-    print('===> Path Config')
-    print(f"marker: {marker_path}")
-    print(f"scene video: {scene_path}")
-    print(f"movie: {movie_path}")
-    print(f"save to: {save_path}")
 
-    print('\n===> Loading marker image')
-    marker = cv2.imread(marker_path)
 
+def generate(scenes,marker,movie,sub_video=True,movie_start_idx = 3,movie_end_idx=50,scene_start_idx=0,scene_end_idx=10 ):           
+    args = get_video_args()
+
+    save_path = f"output/out.avi"
+    
     print('===> Loading scene video')
-    scenes, _ = read_video(scene_path)
-    scenes = scenes[args.scene_start_idx:]
+    scenes, _ = read_video(scenes)
+    scenes = scenes[scene_start_idx:scene_end_idx]
 
     print('===> Loading movie')
-    frames, fps = read_video(movie_path)
-    frames = frames[args.movie_start_idx:]  
+    if sub_video: 
+        frames, fps = read_video(movie)
+        frames = frames[movie_start_idx : movie_end_idx]  
+        print("fps:",fps,len(frames))
+    else:
+        frames = [ movie for i in range(len(scenes))]
+        fps = 30
 
     print('===> Loading Model\n')  
     model_args = get_life_args()        
@@ -229,9 +228,9 @@ def demo():
             imgs.append(blend(estimator, marker, scene, frame, args))
         
         save_video(imgs, fps=fps, size=(imgs[0].shape[1], imgs[0].shape[0]), video_path=save_path)
+    return save_path
 
 if __name__=='__main__': 
 
-    demo()
-
+    generate()
     # python demo_video.py --demo_root "./demo/demo_video" --marker_name "fantastic_beast.jpg"  --scene_name "scene.mp4" --movie_name "cat-in-the-sun.mp4" --save_name "out1.avi"  --movie_start_idx 0 --scene_start_idx 150

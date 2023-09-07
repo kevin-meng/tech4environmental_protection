@@ -1,71 +1,40 @@
-# NeuralMarker
-### [Project Page](https://drinkingcoder.github.io/publication/neuralmarker/)
+# technology for environmental protection
+# 技术为环保赋能
 
-> NeuralMarker: A Framework for Learning General Marker Correspondence   
-> [Zhaoyang Huang](https://drinkingcoder.github.io)<sup>\*</sup>, Xiaokun Pan<sup>\*</sup>, Weihong Pan, Weikang Bian, [Yan Xu](https://decayale.github.io/), Ka Chun Cheung, [Guofeng Zhang](http://www.cad.zju.edu.cn/home/gfzhang/), [Hongsheng Li](https://www.ee.cuhk.edu.hk/~hsli/)  
-> SIGGRAPH Asia (ToG) 2022  
+## 背景
+- 8月24号日本正式向大海排放核废水。 
+- 视频博主被日本核废水话题被限流。
 
-## TODO List
-- [x] Code release
-- [x] Models release 
-- [x] Demo code release 
-- [x] Dataset&Evaluation code release 
+因此就有了开发这个项目的冲动，我们也想为环保做一些自己的事情。
+        
 
-## Environment
-```
-conda create -n neuralmarker
-conda activate neuralmarker
-conda install python=3.7
-pip install -r requirements.txt
-```
+### 服务对象：
+视频博主 （环保理念）
 
-## Dataset
+我们用技术手段，来为他们的视频增加一点 “环保” , 不被限流               
 
-We use the MegaDepth dataset that preprocessed by [CAPS](https://github.com/qianqianwang68/caps), which is provided in this [link](https://drive.google.com/file/d/1-o4TRLx6qm8ehQevV7nExmVJXfMxj657/view?usp=sharing).
-We generate FlyingMarkers training set online. To genenerate FlyingMarkers validation set and test set, please execute:
-```
-python synthesis_datasets.py --root ./data/MegaDepth_CAPS/ --csv ./data/synthesis_validate_release.csv --save_dir ./data/flyingmarkers/validation
-python synthesis_datasets.py --root ./data/MegaDepth_CAPS/ --csv ./data/synthesis_validate_short.csv --save_dir ./data/validation/synthesis
-python synthesis_datasets.py --root ./data/MegaDepth_CAPS/ --csv ./data/synthesis_test_release.csv --save_dir ./data/flyingmarkers/test
-```
+### 开发理念
+                
+**环保不适合商业广告的频重复**
 
-The pretrained models, DVL-Markers benchmark, and data for demo are stored in [Google Drive](https://drive.google.com/drive/folders/1PZvFhx9P3TJZEiLowav-al0hhSH3hxrh?usp=share_link).
+环保意识的培养不在于声音大， 而在与频率高  
+我们目标是通过为博主的视频中无痕添加一些环保元素，**弱化说教**味道，将环保从言传向身教转变。
+主打一个**潜移默化**。
 
+                
+### 技术选型
+                
+视频元素替换模型 中的 佼佼者——[NeuralMarker]("https://arxiv.org/pdf/2209.08896.pdf") （感谢作者开源的模型）
+                
+前端轻量化框架——streamlit     
 
-## Training
-We train our model on 6 V100 with batch size 2.
-```
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 python train.py
-```
+[项目完整数据和模型]("https://pan.baidu.com/s/185h20PqybZ6VbafJzyB0kQ?pwd=1oy2)
 
-## DVL-Markers Evaluation
-Put the DVL-Markers dataset in `data`:
-```
-├── data 
-    ├── DVL
-        ├── D
-        ├── V
-        ├── L
-        ├── marker
-```
-then run
-```
-bash eval_DVL.sh
-```
-The results will be saved in `output`
+### 备注
+本项目向 2023年 Google 开发者大会 黑客松 赛的参赛项目。
 
-## FlyingMarkers Evaluation
-```
-python evaluation_FM.py
-```
+### 页面截图
+![](./static/page1.png)
 
-## Demo
-for video demo, run
-```
-bash demo_video.sh
-```
+![](./static/page2.png)
 
-
-## Acknowledgements
-We thank Yijin Li, Rensen Xu, and Jundan Luo for their help.
-We refer DGC-Net to generate synthetic image pairs.
