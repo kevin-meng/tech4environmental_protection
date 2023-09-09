@@ -30,6 +30,17 @@
 
 [项目完整数据和模型]("https://pan.baidu.com/s/185h20PqybZ6VbafJzyB0kQ?pwd=1oy2)
 
+### 使用方法
+
+1. 下载项目代码( 建议使用网盘数据、包含项目代码、完整的演示)
+2. 运行如下命令：
+```
+pip install -r requirements.txt
+
+streamlit run app.py
+
+```
+
 ### 备注
 本项目向 2023年 Google 开发者大会 黑客松 赛的参赛项目。
 
